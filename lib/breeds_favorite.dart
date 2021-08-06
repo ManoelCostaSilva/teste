@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'model/Breeds.dart';
 import 'model/BreedsModel.dart';
 import 'model/BreedsModelImage.dart';
 import 'model/Favorite.dart';
@@ -15,15 +14,14 @@ class BreedFavorite extends StatefulWidget {
 
 class _AdmPedidosState extends State<BreedFavorite> {
   static List<Favorites> favorites = [];
-  var breedsName='';
-  dynamic lists;
+  //dynamic lists;
 
   @override
   void dispose() {
     super.dispose();
   }
-
-  Future<dynamic> geBreeds() async {
+/*
+  Future<dynamic> getFavorites() async {
     String url='https://dog.ceo/api/breeds/list/all';
 
     final response = await http.get(
@@ -40,10 +38,8 @@ class _AdmPedidosState extends State<BreedFavorite> {
         }
       } catch (e) {
         print(e);
-
       }
-      },
-    );
+      },);
     setState(() {});
   }
 
@@ -60,16 +56,18 @@ class _AdmPedidosState extends State<BreedFavorite> {
     String field=breeds + '-' +favorite;
     for (int i = 0; i < lists.message!.length; i++) {
       if(lists.message[i].toString().contains(field) && c<=4) {
-        print(field+'====='+ lists.message[i]+' * '+c.toString());
         favorites.add(Favorites(breeds,favorite,lists.message[i]));
         c++;
       }
     }
   }
 
+ */
+
   @override
   void initState() {
-    geBreeds();
+  //  getFavorites();
+    favorites =Get.arguments['favorites'] ?? null;
     super.initState();
   }
 
@@ -78,7 +76,7 @@ class _AdmPedidosState extends State<BreedFavorite> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:Texto(tit:'Dreeds '+breedsName,cor: Colors.white,),
+        title:Texto(tit:'Favorites ',cor: Colors.white,),
       ),
 
         body: Column(
@@ -98,26 +96,20 @@ class _AdmPedidosState extends State<BreedFavorite> {
                               children: <Widget>[
                                 Text(favorites[index].breeds.toString()),
                                 Text(favorites[index].favorite.toString()),
-                                Text(favorites[index].img.toString()),
-                                ]
-                          ),
-
-
-
-/*
-                          child:Container(
-                            width: 80,
-                            height: 200,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image:NetworkImage(breedsFields[index].name.toString()),
-                                  fit: BoxFit.fill,
+                                Container(
+                                  width: 200,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image:NetworkImage(favorites[index].img.toString()),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      borderRadius: BorderRadius.all(Radius.circular(100))
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.all(Radius.circular(100))
-                            ),
-                          ),
 
- */
+                              ]
+                          ),
 
                         ),
                     );

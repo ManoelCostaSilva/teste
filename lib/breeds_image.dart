@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'model/Breeds.dart';
-import 'model/BreedsModel.dart';
 import 'model/BreedsModelImage.dart';
 import 'widget/texto.dart';
 import 'package:get/get.dart';
@@ -22,7 +21,7 @@ class _AdmPedidosState extends State<BreedImage> {
     super.dispose();
   }
 
-  Future<dynamic> geBreeds() async {
+  Future<dynamic> geImages() async {
     breedsName =Get.arguments['imgName'] ?? null;
     String url='https://dog.ceo/api/breed/'+breedsName+'/images';
 
@@ -36,15 +35,12 @@ class _AdmPedidosState extends State<BreedImage> {
     for (int i = 0; i < lists.message!.length; i++) {
       breedsFields.add(BreedsFields(lists.message[i]));
     }
-   // print(lists.message[0]);
-    //lists.message!.keys.forEach((k) => breedsFields.add(BreedsFields(k)));
-
     setState(() {});
   }
 
   @override
   void initState() {
-    geBreeds();
+    geImages();
     super.initState();
   }
 

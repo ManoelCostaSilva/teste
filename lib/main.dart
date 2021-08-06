@@ -23,12 +23,8 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Doar',
-      routes: {
-        /*
-        'categorias_lista': (context) => CategoriasLista(),
-         */
-      },
+      title: 'Breeds',
+      routes: {},
       locale: TranslationService.locale,
       fallbackLocale: TranslationService.fallbackLocale,
       translations: TranslationService(),

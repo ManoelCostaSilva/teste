@@ -5,6 +5,8 @@ import 'breeds_favorite.dart';
 import 'breeds_image.dart';
 import 'model/Breeds.dart';
 import 'model/BreedsModel.dart';
+import 'model/BreedsModelImage.dart';
+import 'model/Favorite.dart';
 import 'widget/texto.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +17,8 @@ class BreedList extends StatefulWidget {
 
 class _AdmPedidosState extends State<BreedList> {
   static List<BreedsFields> breedsFields = [];
+  static List<Favorites> favorites = [];
+  dynamic lists;
 
   @override
   void dispose() {
@@ -47,10 +51,28 @@ class _AdmPedidosState extends State<BreedList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title:Texto(tit:'Dreeds List ',cor: Colors.white,),
-      ),
+        appBar: AppBar(
+          centerTitle: true,
+          title:Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Texto(tit:'Dreeds List ',cor: Colors.white,),
+
+                    Transform.translate(
+                      offset: Offset(15, 0),
+                      child:IconButton(
+                        color: Colors.white, icon: new Icon(Icons.settings,),
+                        onPressed: () {
+                          goToFavorites();
+                          },
+                      ),
+                    ),
+                  ],
+                ),
+              ]
+          ),
+        ),
 
         body: Column(
           children: <Widget>[
@@ -62,9 +84,7 @@ class _AdmPedidosState extends State<BreedList> {
 
                     return InkWell(
                       onTap: () {
-                        //Get.to(() => BreedImage(), arguments: {'imgName':breedsFields[index].name.toString()});
-                        Get.to(() => BreedFavorite(), arguments: {'imgName':breedsFields[index].name.toString()});
-
+                        Get.to(() => BreedImage(), arguments: {'imgName':breedsFields[index].name.toString()});
                       },
                       child:Card(
                         elevation:6,
@@ -74,7 +94,7 @@ class _AdmPedidosState extends State<BreedList> {
                         ),
                         child: Padding(
                           padding: EdgeInsets.only(top: 10,bottom: 10,left:15,right: 8),
-                          child:Texto(tit:breedsFields[index].name.toString(), tam: 12.0 ,),
+                          child:Texto(tit:breedsFields[index].name.toString(), tam: 18.0 ,),
                         ),
                       ),
                     );
@@ -84,4 +104,51 @@ class _AdmPedidosState extends State<BreedList> {
         )
     );
   }
+
+  goToFavorites()async{
+    await getFavorites();
+    //Get.offAll(() => UserTermo(), arguments: {'tipo':'doar'});
+    Get.to(() => BreedFavorite(), arguments: {'favorites':favorites});
+  }
+  Future<dynamic> getFavorites() async {
+    String url='https://dog.ceo/api/breeds/list/all';
+
+    final response = await http.get(
+        Uri.parse(url)
+    );
+
+    final list = await breedsFromJson(response.body);
+    lists = list;
+    lists.message!.forEach( (breeds, favorite) {
+      try{
+        var stringList = favorite.join("#");
+        if(stringList.toString().length>0) {
+          getImage(breeds,stringList);
+        }
+      } catch (e) {
+        print(e);
+      }
+    },);
+    setState(() {});
+  }
+
+  getImage(String breeds,String favorite)async{
+    String url='https://dog.ceo/api/breed/'+breeds+'/images';
+
+    final response = await http.get(
+        Uri.parse(url)
+    );
+
+    final list = await imageFromJson(response.body);
+    lists = list;
+    int c=0;
+    String field=breeds + '-' +favorite;
+    for (int i = 0; i < lists.message!.length; i++) {
+      if(lists.message[i].toString().contains(field) && c<=4) {
+        favorites.add(Favorites(breeds,favorite,lists.message[i]));
+        c++;
+      }
+    }
+  }
+
 }
